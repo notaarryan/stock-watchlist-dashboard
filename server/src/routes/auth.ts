@@ -3,9 +3,9 @@ import passport from "passport";
 import pool from "../db/pool";
 import bcrypt from "bcrypt";
 
-const router = express.Router();
+const authRouter = express.Router();
 
-router.post("/register", async (req, res, next) => {
+authRouter.post("/register", async (req, res, next) => {
   try {
     const username = req.body.username;
     const password = req.body.password;
@@ -25,4 +25,15 @@ router.post("/register", async (req, res, next) => {
   }
 });
 
-export default router;
+authRouter.post("/login", passport.authenticate("local"), (req, res) => {
+  res.json({ message: "Logged in" });
+});
+
+authRouter.post("/logout", (req, res, next) => {
+  req.logOut((err) => {
+    if (err) return next(err);
+    res.json({ message: "Logged out" });
+  });
+});
+
+export default authRouter;
