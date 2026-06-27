@@ -15,4 +15,26 @@ stocksRouter.get("/:symbol", async (req, res, next) => {
   }
 });
 
+stocksRouter.get("/:symbol/history", async (req, res, next) => {
+  try {
+    const range = req.query.range || "1D";
+    const symbol = req.params.symbol;
+    const functionMap: Record<string, string> = {
+      "1W": "TIME_SERIES_DAILY",
+      "1M": "TIME_SERIES_DAILY",
+      "1Y": "TIME_SERIES_WEEKLY",
+      "10Y": "TIME_SERIES_MONTHLY",
+    };
+
+    const avFunction = functionMap[range as string] || "TIME_SERIES_DAILY";
+    const response = await fetch(
+      `https://www.alphavantage.co/query?function=${avFunction}&symbol=${symbol}&apikey=${process.env.ALPHA_VANTAGE_API_KEY}`,
+    );
+    const result = await response.json();
+    return res.json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default stocksRouter;
