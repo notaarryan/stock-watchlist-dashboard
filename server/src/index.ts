@@ -4,6 +4,8 @@ import session from "express-session";
 import passport from "passport";
 import "./passport";
 import authRouter from "./routes/auth";
+import watchlistRouter from "./routes/watchlist";
+
 const app = express();
 app.use(express.json());
 app.use(
@@ -15,8 +17,9 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-const port = Number(process.env.PORT) || 3000;
 
+const port = Number(process.env.PORT) || 3000;
 app.get("/", (req, res) => res.send("Hello World!"));
 app.use("/auth", authRouter);
+app.use("/watchlist", watchlistRouter);
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
