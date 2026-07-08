@@ -46,6 +46,9 @@ function Login() {
         onSubmit={loginHandle}
         className="flex flex-col gap-6 p-10 rounded-2xl w-[400px] border border-white/10 bg-white/5 backdrop-blur-sm"
       >
+        <div>
+          <p className="text-sm uppercase tracking-widest text-center">Login</p>
+        </div>
         <div className="flex flex-col gap-2.5">
           <label
             htmlFor="username"
