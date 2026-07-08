@@ -3,6 +3,11 @@ import passport from "passport";
 import pool from "../db/pool";
 import bcrypt from "bcrypt";
 
+interface user {
+  user_id: number;
+  username: string;
+}
+
 const authRouter = express.Router();
 
 authRouter.post("/register", async (req, res, next) => {
@@ -26,7 +31,7 @@ authRouter.post("/register", async (req, res, next) => {
 });
 
 authRouter.post("/login", passport.authenticate("local"), (req, res) => {
-  res.json({ message: "Logged in" });
+  res.json({ user: req.user, message: "Logged in" });
 });
 
 authRouter.post("/logout", (req, res, next) => {
@@ -34,6 +39,13 @@ authRouter.post("/logout", (req, res, next) => {
     if (err) return next(err);
     res.json({ message: "Logged out" });
   });
+});
+
+authRouter.get("/me", (req, res, next) => {
+  if (req.isAuthenticated() === true) {
+    return res.json({ user: req.user });
+  }
+  return res.status(401).json({ message: "Not logged in" });
 });
 
 export default authRouter;

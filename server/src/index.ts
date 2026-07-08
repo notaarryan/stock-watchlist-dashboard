@@ -2,12 +2,19 @@ import express from "express";
 import "dotenv/config";
 import session from "express-session";
 import passport from "passport";
+import cors from "cors";
 import "./passport";
 import authRouter from "./routes/auth";
 import watchlistRouter from "./routes/watchlist";
 import stocksRouter from "./routes/stocks";
 
 const app = express();
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  }),
+);
 app.use(express.json());
 app.use(
   session({
