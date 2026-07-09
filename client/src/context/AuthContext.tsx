@@ -28,7 +28,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (result.user) {
           setUser(result.user as UserType);
         }
-        console.log(result);
       } catch (error) {
         console.log(error);
       } finally {

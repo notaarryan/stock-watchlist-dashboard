@@ -9,7 +9,7 @@ stocksRouter.get("/search", async (req, res, next) => {
       `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${query}&apikey=${process.env.ALPHA_VANTAGE_API_KEY}`,
     );
     const result = await response.json();
-    res.json({ stockData: result });
+    return res.json({ stockData: result });
   } catch (error) {
     next(error);
   }
@@ -42,6 +42,18 @@ stocksRouter.get("/:symbol/history", async (req, res, next) => {
     const avFunction = functionMap[range as string] || "TIME_SERIES_DAILY";
     const response = await fetch(
       `https://www.alphavantage.co/query?function=${avFunction}&symbol=${symbol}&apikey=${process.env.ALPHA_VANTAGE_API_KEY}`,
+    );
+    const result = await response.json();
+    return res.json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
+stocksRouter.get("/:symbol/overview", async (req, res, next) => {
+  try {
+    const response = await fetch(
+      `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${req.params.symbol}&apikey=${process.env.ALPHA_VANTAGE_API_KEY}`,
     );
     const result = await response.json();
     return res.json(result);
