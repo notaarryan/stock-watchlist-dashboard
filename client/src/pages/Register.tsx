@@ -55,7 +55,7 @@ function Register() {
     <div className="flex justify-center items-center w-full">
       <form
         onSubmit={loginHandle}
-        className="flex flex-col gap-6 p-10 rounded-2xl w-[400px] border border-white/10 bg-white/5 backdrop-blur-sm"
+        className="flex flex-col gap-6 p-10 rounded-2xl w-100 border border-white/10 bg-white/5 backdrop-blur-sm"
       >
         <div>
           <p className="text-sm uppercase tracking-widest text-center">
