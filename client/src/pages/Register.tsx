@@ -1,6 +1,6 @@
 import type React from "react";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
 function Register() {
@@ -8,6 +8,8 @@ function Register() {
   const [password, setPassword] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || "/";
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -48,7 +50,7 @@ function Register() {
     }
     setUsername("");
     setPassword("");
-    navigate("/");
+    navigate(from);
   };
 
   return (
