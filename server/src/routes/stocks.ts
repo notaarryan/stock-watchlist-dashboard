@@ -2,6 +2,19 @@ import express from "express";
 
 const stocksRouter = express.Router();
 
+stocksRouter.get("/search", async (req, res, next) => {
+  try {
+    const query = req.query.q;
+    const response = await fetch(
+      `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${query}&apikey=${process.env.ALPHA_VANTAGE_API_KEY}`,
+    );
+    const result = await response.json();
+    res.json({ stockData: result });
+  } catch (error) {
+    next(error);
+  }
+});
+
 stocksRouter.get("/:symbol", async (req, res, next) => {
   try {
     const symbol = req.params.symbol;
