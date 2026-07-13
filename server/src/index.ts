@@ -31,4 +31,4 @@ app.get("/", (req, res) => res.send("Hello World!"));
 app.use("/auth", authRouter);
 app.use("/watchlist", watchlistRouter);
 app.use("/stocks", stocksRouter);
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.listen(port);

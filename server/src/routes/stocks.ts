@@ -1,4 +1,6 @@
 import express from "express";
+import YahooFinance from "yahoo-finance2";
+const yf = new YahooFinance();
 
 const stocksRouter = express.Router();
 
@@ -6,7 +8,7 @@ stocksRouter.get("/search", async (req, res, next) => {
   try {
     const query = req.query.q;
     const response = await fetch(
-      `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${query}&apikey=${process.env.ALPHA_VANTAGE_API_KEY}`,
+      `https://api.polygon.io/v3/reference/tickers?search=${query}&apiKey=${process.env.POLYGON_API_KEY}`,
     );
     const result = await response.json();
     return res.json({ stockData: result });
@@ -30,20 +32,30 @@ stocksRouter.get("/:symbol", async (req, res, next) => {
 
 stocksRouter.get("/:symbol/history", async (req, res, next) => {
   try {
-    const range = req.query.range || "1D";
+    const range = req.query.range || "1W";
     const symbol = req.params.symbol;
-    const functionMap: Record<string, string> = {
-      "1W": "TIME_SERIES_DAILY",
-      "1M": "TIME_SERIES_DAILY",
-      "1Y": "TIME_SERIES_WEEKLY",
-      "10Y": "TIME_SERIES_MONTHLY",
-    };
+    const period1 = new Date();
+    let interval: "1d" | "1wk" | "1mo" = "1d";
 
-    const avFunction = functionMap[range as string] || "TIME_SERIES_DAILY";
-    const response = await fetch(
-      `https://www.alphavantage.co/query?function=${avFunction}&symbol=${symbol}&apikey=${process.env.ALPHA_VANTAGE_API_KEY}`,
+    if (range === "1W") {
+      period1.setDate(period1.getDate() - 7);
+      interval = "1d";
+    } else if (range === "1M") {
+      period1.setMonth(period1.getMonth() - 1);
+      interval = "1d";
+    } else if (range === "1Y") {
+      period1.setFullYear(period1.getFullYear() - 1);
+      interval = "1wk";
+    } else if (range === "10Y") {
+      period1.setFullYear(period1.getFullYear() - 10);
+      interval = "1mo";
+    }
+
+    const result = await yf.chart(
+      symbol,
+      { period1, interval },
+      { validateResult: false },
     );
-    const result = await response.json();
     return res.json(result);
   } catch (error) {
     next(error);
@@ -52,8 +64,9 @@ stocksRouter.get("/:symbol/history", async (req, res, next) => {
 
 stocksRouter.get("/:symbol/overview", async (req, res, next) => {
   try {
+    const symbol = req.params.symbol;
     const response = await fetch(
-      `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${req.params.symbol}&apikey=${process.env.ALPHA_VANTAGE_API_KEY}`,
+      `https://api.polygon.io/v3/reference/tickers/${symbol}?apiKey=${process.env.POLYGON_API_KEY}`,
     );
     const result = await response.json();
     return res.json(result);

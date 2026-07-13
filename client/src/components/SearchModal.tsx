@@ -3,14 +3,14 @@ import { FiSearch } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
 interface StockMatch {
-  "1. symbol": string;
-  "2. name": string;
-  "4. region": string;
+  ticker: string;
+  name: string;
+  market: string;
 }
 
 interface StockDataType {
   stockData: {
-    bestMatches: StockMatch[];
+    results: StockMatch[];
   };
 }
 
@@ -97,20 +97,20 @@ function SearchModal() {
             </button>
             {stockData && (
               <div className="absolute top-full left-0 w-full bg-gray-900 rounded-xl mt-1 z-10 max-h-64 overflow-y-auto [&::-webkit-scrollbar]:hidden">
-                {stockData.stockData.bestMatches.map((stock) => (
+                {stockData.stockData.results.map((stock) => (
                   <div
-                    key={stock["1. symbol"]}
-                    onClick={() => navigate(`/stocks/${stock["1. symbol"]}`)}
+                    key={stock["ticker"]}
+                    onClick={() => navigate(`/stocks/${stock["ticker"]}`)}
                     className="flex justify-between items-center px-4 py-3 border-b border-white/10 hover:bg-white/10 cursor-pointer last:border-none gap-4"
                   >
                     <div>
-                      <span className="font-bold">{stock["1. symbol"]}</span>
+                      <span className="font-bold">{stock["ticker"]}</span>
                       <span className="text-gray-400 ml-2">
-                        {stock["2. name"]}
+                        {stock["name"]}
                       </span>
                     </div>
                     <span className="text-xs text-gray-500 bg-white/10 px-2 py-1 rounded">
-                      {stock["4. region"]}
+                      {stock["market"]}
                     </span>
                   </div>
                 ))}

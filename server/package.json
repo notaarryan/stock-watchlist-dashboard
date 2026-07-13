@@ -19,7 +19,8 @@
     "express-session": "^1.19.0",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
-    "pg": "^8.22.0"
+    "pg": "^8.22.0",
+    "yahoo-finance2": "^4.0.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
