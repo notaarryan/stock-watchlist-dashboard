@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { logError } from "../utils/log";
 
 interface StockDataType {
   c: number;
@@ -33,7 +34,7 @@ function WatchlistItem({
         const result = await response.json();
         setStockData(result);
       } catch (error) {
-        console.log(error);
+        logError(`Failed to load quote for ${symbol}:`, error);
       }
     };
     fetchData();

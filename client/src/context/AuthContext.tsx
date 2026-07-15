@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { AuthContext } from "./auth-context";
+import { logError } from "../utils/log";
 
 interface UserType {
   user_id: number;
@@ -22,7 +23,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setUser(result.user as UserType);
         }
       } catch (error) {
-        console.log(error);
+        logError("Failed to check auth status:", error);
       } finally {
         setLoading(false);
       }

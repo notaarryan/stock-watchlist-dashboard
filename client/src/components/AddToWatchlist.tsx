@@ -1,9 +1,12 @@
 import { FiStar } from "react-icons/fi";
 import { FaStar } from "react-icons/fa";
 import { useEffect, useState } from "react";
+import { useAuth } from "../hooks/useAuth";
+import { logError } from "../utils/log";
 
 function AddToWatchlist({ symbol }: { symbol: string }) {
   const [isAdded, setIsAdded] = useState<boolean>(false);
+  const { logout } = useAuth();
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   const handleClick = async () => {
@@ -24,7 +27,7 @@ function AddToWatchlist({ symbol }: { symbol: string }) {
         setIsAdded(true);
       }
     } catch (error) {
-      console.log(error);
+      logError(`Failed to update watchlist for ${symbol}:`, error);
     }
   };
 
@@ -34,6 +37,10 @@ function AddToWatchlist({ symbol }: { symbol: string }) {
         const response = await fetch(`${BACKEND_URL}/watchlist`, {
           credentials: "include",
         });
+        if (response.status === 401) {
+          logout();
+          return;
+        }
         const result = await response.json();
         const found =
           Array.isArray(result) &&
@@ -42,11 +49,11 @@ function AddToWatchlist({ symbol }: { symbol: string }) {
           );
         setIsAdded(found);
       } catch (error) {
-        console.log(error);
+        logError(`Failed to check watchlist status for ${symbol}:`, error);
       }
     };
     checkWatchlist();
-  }, [symbol, BACKEND_URL]);
+  }, [symbol, BACKEND_URL, logout]);
 
   return (
     <button onClick={handleClick} className="cursor-pointer">

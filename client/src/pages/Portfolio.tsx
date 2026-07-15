@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import PortfolioSymbolGroup from "../components/PortfolioSymbolGroup";
 import PortfolioAllocationChart from "../components/PortfolioAllocationChart";
 import Loader from "./Loader";
+import { useAuth } from "../hooks/useAuth";
 import {
   aggregateBySymbol,
   summarizePortfolio,
@@ -14,6 +15,7 @@ function Portfolio() {
   const [quotes, setQuotes] = useState<Record<string, StockQuote>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { logout } = useAuth();
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
@@ -22,6 +24,10 @@ function Portfolio() {
         const response = await fetch(`${BACKEND_URL}/portfolio`, {
           credentials: "include",
         });
+        if (response.status === 401) {
+          logout();
+          return;
+        }
         const result = await response.json();
         const rawLots = Array.isArray(result.lots) ? result.lots : [];
         setLots(
@@ -40,7 +46,7 @@ function Portfolio() {
       }
     };
     fetchLots();
-  }, [BACKEND_URL]);
+  }, [BACKEND_URL, logout]);
 
   useEffect(() => {
     if (!lots || lots.length === 0) return;

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import WatchlistItem from "../components/WatchlistItem";
 import Loader from "./Loader";
+import { useAuth } from "../hooks/useAuth";
 
 interface WatchlistItemType {
   stock_symbol: string;
@@ -12,6 +13,7 @@ function Watchlist() {
   >(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { logout } = useAuth();
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   const handleRemove = async (symbol: string) => {
@@ -38,6 +40,10 @@ function Watchlist() {
         const response = await fetch(`${BACKEND_URL}/watchlist`, {
           credentials: "include",
         });
+        if (response.status === 401) {
+          logout();
+          return;
+        }
         const result = await response.json();
         if (Array.isArray(result)) {
           setWatchlistItems(result);
@@ -53,7 +59,7 @@ function Watchlist() {
       }
     };
     fetchData();
-  }, [BACKEND_URL]);
+  }, [BACKEND_URL, logout]);
 
   if (isLoading) return <Loader />;
 
