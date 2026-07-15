@@ -1,4 +1,11 @@
-import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import {
+  Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts";
 import type { SymbolAggregate } from "../utils/portfolio";
 
 const COLORS = [
@@ -29,8 +36,8 @@ function PortfolioAllocationChart({
       <p className="text-gray-500 dark:text-gray-400 text-sm mb-2">
         Allocation by cost basis
       </p>
-      <ResponsiveContainer width="100%" height={280}>
-        <PieChart>
+      <ResponsiveContainer width="100%" height={280} className="outline-none">
+        <PieChart className="outline-none">
           <Pie
             data={data}
             dataKey="value"
@@ -41,6 +48,7 @@ function PortfolioAllocationChart({
             label={({ name, percent }) =>
               `${name} ${((percent ?? 0) * 100).toFixed(0)}%`
             }
+            className="outline-none"
           >
             {data.map((entry, index) => (
               <Cell key={entry.name} fill={COLORS[index % COLORS.length]} />
