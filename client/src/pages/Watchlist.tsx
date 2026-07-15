@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import WatchlistItem from "../components/WatchlistItem";
+import Skeleton from "../components/Skeleton";
 
 interface WatchlistItemType {
   stock_symbol: string;
@@ -33,7 +34,7 @@ function Watchlist() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:3000/watchlist", {
+        const response = await fetch(`${BACKEND_URL}/watchlist`, {
           credentials: "include",
         });
         const result = await response.json();
@@ -49,7 +50,7 @@ function Watchlist() {
       }
     };
     fetchData();
-  }, []);
+  }, [BACKEND_URL]);
 
   if (error)
     return (
@@ -71,8 +72,10 @@ function Watchlist() {
   return (
     <>
       {watchlistItems === null ? (
-        <div className="flex-1 flex items-center justify-center">
-          <p className="text-gray-500">Loading...</p>
+        <div className="flex flex-col max-w-2xl mx-auto w-full mt-8 gap-2">
+          <Skeleton className="h-17 w-full rounded-xl" />
+          <Skeleton className="h-17 w-full rounded-xl" />
+          <Skeleton className="h-17 w-full rounded-xl" />
         </div>
       ) : (
         watchlistItems.map((item) => {

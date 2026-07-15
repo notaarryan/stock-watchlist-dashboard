@@ -14,7 +14,8 @@ passport.use(
       if (!user) return done(null, false);
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) return done(null, false);
-      return done(null, user);
+      const { password: _password, ...safeUser } = user;
+      return done(null, safeUser);
     } catch (err) {
       return done(err);
     }

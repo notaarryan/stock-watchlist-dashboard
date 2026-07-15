@@ -52,7 +52,7 @@ function Login() {
     <div className="flex justify-center items-center w-full">
       <form
         onSubmit={loginHandle}
-        className="flex flex-col gap-6 p-10 rounded-2xl w-100 border border-white/10 bg-white/5 backdrop-blur-sm"
+        className="flex flex-col gap-6 p-10 rounded-2xl w-100 border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 backdrop-blur-sm"
       >
         <div>
           <p className="text-sm uppercase tracking-widest text-center">Login</p>
@@ -68,7 +68,7 @@ function Login() {
             type="text"
             name="username"
             id="username"
-            className="bg-white/5 border border-white/10 text-white px-4 py-3 rounded-lg outline-none focus:border-white/30 transition-colors w-full"
+            className="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-black dark:text-white px-4 py-3 rounded-lg outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors w-full"
             onChange={(e) => handleUsernameInput(e)}
             value={username}
             onKeyDown={(e) => handleKeyDown(e)}
@@ -86,7 +86,7 @@ function Login() {
             name="password"
             id="password"
             required
-            className="bg-white/5 border border-white/10 text-white px-4 py-3 rounded-lg outline-none focus:border-white/30 transition-colors w-full"
+            className="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-black dark:text-white px-4 py-3 rounded-lg outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors w-full"
             onChange={(e) => handlePasswordInput(e)}
             value={password}
             onKeyDown={(e) => handleKeyDown(e)}
@@ -94,7 +94,7 @@ function Login() {
         </div>
         <button
           type="submit"
-          className="bg-white text-black py-3 rounded-lg font-medium tracking-tight hover:bg-gray-100 hover:cursor-pointer transition-colors"
+          className="bg-gray-900 dark:bg-white text-white dark:text-black py-3 rounded-lg font-medium tracking-tight hover:bg-gray-700 dark:hover:bg-gray-100 hover:cursor-pointer transition-colors"
         >
           Login
         </button>

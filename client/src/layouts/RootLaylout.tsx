@@ -9,7 +9,7 @@ function RootLaylout() {
     return <Loader />;
   }
   return (
-    <div className="min-h-screen w-full flex flex-col px-10 py-2.5 text-gray-50 bg-gray-950">
+    <div className="min-h-screen w-full flex flex-col px-10 py-2.5 text-gray-900 dark:text-gray-50 bg-white dark:bg-gray-950">
       <Navbar />
       <main className="flex flex-1">
         <Outlet />

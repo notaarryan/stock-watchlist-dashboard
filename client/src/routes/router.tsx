@@ -3,6 +3,7 @@ import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Watchlist from "../pages/Watchlist";
+import Portfolio from "../pages/Portfolio";
 import Stock from "../pages/Stock";
 import Error from "../pages/Error";
 import Loader from "../pages/Loader";
@@ -33,6 +34,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Watchlist />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "portfolio",
+        element: (
+          <ProtectedRoute>
+            <Portfolio />
           </ProtectedRoute>
         ),
       },

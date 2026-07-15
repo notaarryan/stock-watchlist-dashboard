@@ -9,8 +9,9 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import AddToWatchlist from "../components/AddToWatchlist";
+import AddToPortfolio from "../components/AddToPortfolio";
 import { useAuth } from "../hooks/useAuth";
-import Loader from "./Loader";
+import Skeleton from "../components/Skeleton";
 
 interface StockDataType {
   c: number;
@@ -53,7 +54,7 @@ function Stock() {
     price: item.close,
   }));
   const firstPrice = chartData?.[0]?.price;
-  const lastPrice = chartData?.[chartData.length - 1]?.price;
+  const lastPrice = chartData?.at(-1)?.price;
   const rangeReturn =
     firstPrice && lastPrice
       ? ((lastPrice - firstPrice) / firstPrice) * 100
@@ -73,7 +74,7 @@ function Stock() {
     const fetchData = async () => {
       try {
         const stockDataResponse = await fetch(
-          `${BACKEND_URL}/${params.symbol}`,
+          `${BACKEND_URL}/stocks/${params.symbol}`,
         );
         const stockDataResult = await stockDataResponse.json();
         setStockData(stockDataResult);
@@ -92,7 +93,7 @@ function Stock() {
     const fetchData = async () => {
       try {
         const stockHistoryResponse = await fetch(
-          `${BACKEND_URL}/${params.symbol?.toUpperCase()}/history?range=${range}`,
+          `${BACKEND_URL}/stocks/${params.symbol?.toUpperCase()}/history?range=${range}`,
         );
         const stockHistoryResult = await stockHistoryResponse.json();
         setStockHistory(stockHistoryResult);
@@ -126,10 +127,6 @@ function Stock() {
     return () => clearInterval(timer);
   }, [stockData]);
 
-  if (isLoading) {
-    return <Loader />;
-  }
-
   if (error)
     return (
       <div className="flex-1 flex items-center justify-center">
@@ -137,15 +134,40 @@ function Stock() {
       </div>
     );
 
+  if (isLoading || !stockData || !stockHistory) {
+    return (
+      <div className="flex flex-col gap-4 w-full px-16 py-8">
+        <Skeleton className="h-4 w-48" />
+        <Skeleton className="h-12 w-40" />
+        <Skeleton className="h-5 w-56" />
+        <Skeleton className="h-[400px] w-full" />
+        <div className="flex gap-2">
+          <Skeleton className="h-7 w-12 rounded-full" />
+          <Skeleton className="h-7 w-12 rounded-full" />
+          <Skeleton className="h-7 w-12 rounded-full" />
+          <Skeleton className="h-7 w-12 rounded-full" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-4 w-full px-16 py-8">
       {stockData && stockHistory && (
         <>
-          <div className="flex items-center gap-2 text-gray-400 text-sm">
+          <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-sm">
             <span>
               {params.symbol} · {stockHistory.meta.longName}
             </span>
-            {user && <AddToWatchlist symbol={params.symbol!} />}
+            {user && (
+              <div className="flex items-center gap-3">
+                <AddToWatchlist symbol={params.symbol!} />
+                <AddToPortfolio
+                  symbol={params.symbol!}
+                  currentPrice={stockData.c}
+                />
+              </div>
+            )}
           </div>
           <div className="text-5xl font-bold">${displayPrice.toFixed(2)}</div>
           <div className={stockData.d >= 0 ? "text-green-500" : "text-red-500"}>
@@ -199,8 +221,8 @@ function Stock() {
                 key={r}
                 className={
                   r === range
-                    ? "bg-white text-black px-3 py-1 rounded-full text-sm cursor-pointer"
-                    : "text-gray-400 px-3 py-1 rounded-full text-sm hover:text-white cursor-pointer"
+                    ? "bg-gray-900 dark:bg-white text-white dark:text-black px-3 py-1 rounded-full text-sm cursor-pointer"
+                    : "text-gray-500 dark:text-gray-400 px-3 py-1 rounded-full text-sm hover:text-black dark:hover:text-white cursor-pointer"
                 }
                 onClick={() => setRange(r as "1W" | "1M" | "1Y" | "10Y")}
               >

@@ -41,7 +41,7 @@ function SearchModal() {
 
   const fetchStocks = async () => {
     const response = await fetch(
-      `${BACKEND_URL}/stocks/search?q=${searchQuery}`,
+      `${BACKEND_URL}/stocks/search?q=${encodeURIComponent(searchQuery)}`,
     );
     const result = await response.json();
     setStockData(result);
@@ -78,7 +78,7 @@ function SearchModal() {
         >
           <div className="relative" onClick={(e) => e.stopPropagation()}>
             <input
-              className="border-[0.5px] rounded-2xl placeholder-white text-lg px-5 py-1 outline-none pr-12"
+              className="border-[0.5px] border-black/30 dark:border-white/30 rounded-2xl bg-white dark:bg-transparent text-black dark:text-white placeholder-gray-500 dark:placeholder-white text-lg px-5 py-1 outline-none pr-12"
               type="text"
               name="search-bar"
               id="search-bar"
@@ -97,7 +97,7 @@ function SearchModal() {
               <FiSearch size={18} />
             </button>
             {stockData && (
-              <div className="absolute top-full left-0 w-full bg-gray-900 rounded-xl mt-1 z-10 max-h-64 overflow-y-auto [&::-webkit-scrollbar]:hidden">
+              <div className="absolute top-full left-0 w-full bg-white dark:bg-gray-900 text-black dark:text-white rounded-xl mt-1 z-10 max-h-64 overflow-y-auto [&::-webkit-scrollbar]:hidden">
                 {stockData.stockData.results.map((stock) => (
                   <div
                     key={stock["ticker"]}
@@ -105,15 +105,15 @@ function SearchModal() {
                       setIsOpen(false);
                       navigate(`/stocks/${stock["ticker"]}`);
                     }}
-                    className="flex justify-between items-center px-4 py-3 border-b border-white/10 hover:bg-white/10 cursor-pointer last:border-none gap-4"
+                    className="flex justify-between items-center px-4 py-3 border-b border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer last:border-none gap-4"
                   >
                     <div>
                       <span className="font-bold">{stock["ticker"]}</span>
-                      <span className="text-gray-400 ml-2">
+                      <span className="text-gray-500 dark:text-gray-400 ml-2">
                         {stock["name"]}
                       </span>
                     </div>
-                    <span className="text-xs text-gray-500 bg-white/10 px-2 py-1 rounded">
+                    <span className="text-xs text-gray-500 dark:text-gray-500 bg-black/5 dark:bg-white/10 px-2 py-1 rounded">
                       {stock["market"]}
                     </span>
                   </div>

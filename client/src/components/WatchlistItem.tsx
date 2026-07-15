@@ -40,7 +40,7 @@ function WatchlistItem({
   }, [symbol, BACKEND_URL]);
   return (
     <div
-      className="flex justify-between items-center px-4 py-4 border border-white/10 rounded-xl mb-2 hover:bg-white/5 cursor-pointer"
+      className="flex justify-between items-center px-4 py-4 border border-black/10 dark:border-white/10 rounded-xl mb-2 hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer"
       onClick={handleClick}
     >
       <div>

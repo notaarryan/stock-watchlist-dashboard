@@ -12,8 +12,13 @@ const authRouter = express.Router();
 
 authRouter.post("/register", async (req, res, next) => {
   try {
-    const username = req.body.username;
-    const password = req.body.password;
+    const username = typeof req.body.username === "string" ? req.body.username.trim() : "";
+    const password = typeof req.body.password === "string" ? req.body.password : "";
+    if (!username || !password) {
+      return res
+        .status(400)
+        .json({ message: "Username and password are required" });
+    }
     const result = await pool.query("SELECT * FROM users WHERE username = $1", [
       username,
     ]);
@@ -30,9 +35,26 @@ authRouter.post("/register", async (req, res, next) => {
   }
 });
 
-authRouter.post("/login", passport.authenticate("local"), (req, res) => {
-  res.json({ user: req.user, message: "Logged in" });
-});
+authRouter.post(
+  "/login",
+  (req, res, next) => {
+    if (
+      typeof req.body.username !== "string" ||
+      typeof req.body.password !== "string" ||
+      !req.body.username ||
+      !req.body.password
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Username and password are required" });
+    }
+    next();
+  },
+  passport.authenticate("local"),
+  (req, res) => {
+    res.json({ user: req.user, message: "Logged in" });
+  },
+);
 
 authRouter.post("/logout", (req, res, next) => {
   req.logOut((err) => {

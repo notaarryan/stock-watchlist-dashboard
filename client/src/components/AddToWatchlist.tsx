@@ -30,14 +30,20 @@ function AddToWatchlist({ symbol }: { symbol: string }) {
 
   useEffect(() => {
     const checkWatchlist = async () => {
-      const response = await fetch(`${BACKEND_URL}/watchlist`, {
-        credentials: "include",
-      });
-      const result = await response.json();
-      const found = result.some(
-        (item: { stock_symbol: string }) => item.stock_symbol === symbol,
-      );
-      setIsAdded(found);
+      try {
+        const response = await fetch(`${BACKEND_URL}/watchlist`, {
+          credentials: "include",
+        });
+        const result = await response.json();
+        const found =
+          Array.isArray(result) &&
+          result.some(
+            (item: { stock_symbol: string }) => item.stock_symbol === symbol,
+          );
+        setIsAdded(found);
+      } catch (error) {
+        console.log(error);
+      }
     };
     checkWatchlist();
   }, [symbol, BACKEND_URL]);

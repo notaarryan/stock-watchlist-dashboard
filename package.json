@@ -1,8 +1,4 @@
 {
-  "dependencies": {
-    "bcrypt": "^6.0.0"
-  },
-  "devDependencies": {
-    "@types/bcrypt": "^6.0.0"
-  }
+  "name": "stock-watchlist-dashboard",
+  "private": true
 }

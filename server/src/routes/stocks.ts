@@ -6,9 +6,9 @@ const stocksRouter = express.Router();
 
 stocksRouter.get("/search", async (req, res, next) => {
   try {
-    const query = req.query.q;
+    const query = String(req.query.q ?? "");
     const response = await fetch(
-      `https://api.polygon.io/v3/reference/tickers?search=${query}&apiKey=${process.env.POLYGON_API_KEY}`,
+      `https://api.polygon.io/v3/reference/tickers?search=${encodeURIComponent(query)}&apiKey=${process.env.POLYGON_API_KEY}`,
     );
     const result = await response.json();
     return res.json({ stockData: result });
@@ -21,7 +21,7 @@ stocksRouter.get("/:symbol", async (req, res, next) => {
   try {
     const symbol = req.params.symbol;
     const response = await fetch(
-      `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${process.env.FINNHUB_API_KEY}`,
+      `https://finnhub.io/api/v1/quote?symbol=${encodeURIComponent(symbol)}&token=${process.env.FINNHUB_API_KEY}`,
     );
     const data = await response.json();
     return res.json(data);
@@ -66,7 +66,7 @@ stocksRouter.get("/:symbol/overview", async (req, res, next) => {
   try {
     const symbol = req.params.symbol;
     const response = await fetch(
-      `https://api.polygon.io/v3/reference/tickers/${symbol}?apiKey=${process.env.POLYGON_API_KEY}`,
+      `https://api.polygon.io/v3/reference/tickers/${encodeURIComponent(symbol)}?apiKey=${process.env.POLYGON_API_KEY}`,
     );
     const result = await response.json();
     return res.json(result);
