@@ -12,8 +12,10 @@ const authRouter = express.Router();
 
 authRouter.post("/register", async (req, res, next) => {
   try {
-    const username = typeof req.body.username === "string" ? req.body.username.trim() : "";
-    const password = typeof req.body.password === "string" ? req.body.password : "";
+    const username =
+      typeof req.body.username === "string" ? req.body.username.trim() : "";
+    const password =
+      typeof req.body.password === "string" ? req.body.password : "";
     if (!username || !password) {
       return res
         .status(400)
@@ -66,8 +68,9 @@ authRouter.post("/logout", (req, res, next) => {
 authRouter.get("/me", (req, res, next) => {
   if (req.isAuthenticated() === true) {
     return res.json({ user: req.user });
+  } else {
+    return res.status(401).json({ message: "Not logged in" });
   }
-  return res.status(401).json({ message: "Not logged in" });
 });
 
 export default authRouter;
