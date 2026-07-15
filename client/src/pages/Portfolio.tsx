@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import PortfolioSymbolGroup from "../components/PortfolioSymbolGroup";
-import Skeleton from "../components/Skeleton";
+import Loader from "./Loader";
 import {
   aggregateBySymbol,
   summarizePortfolio,
@@ -11,6 +11,7 @@ import {
 function Portfolio() {
   const [lots, setLots] = useState<PortfolioLot[] | null>(null);
   const [quotes, setQuotes] = useState<Record<string, StockQuote>>({});
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -33,6 +34,8 @@ function Portfolio() {
         setError(
           err instanceof Error ? err.message : "Failed to load portfolio",
         );
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchLots();
@@ -80,6 +83,8 @@ function Portfolio() {
     }
   };
 
+  if (isLoading) return <Loader />;
+
   if (error)
     return (
       <div className="flex-1 flex items-center justify-center">
@@ -87,17 +92,7 @@ function Portfolio() {
       </div>
     );
 
-  if (lots === null) {
-    return (
-      <div className="flex flex-col max-w-2xl mx-auto w-full mt-8 gap-2">
-        <Skeleton className="h-20 w-full mb-4" />
-        <Skeleton className="h-20 w-full" />
-        <Skeleton className="h-20 w-full" />
-      </div>
-    );
-  }
-
-  if (lots.length === 0) {
+  if (lots === null || lots.length === 0) {
     return (
       <div className="flex-1 flex items-center justify-center">
         <p className="text-gray-500 dark:text-gray-500">

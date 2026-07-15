@@ -11,7 +11,7 @@ import {
 import AddToWatchlist from "../components/AddToWatchlist";
 import AddToPortfolio from "../components/AddToPortfolio";
 import { useAuth } from "../hooks/useAuth";
-import Skeleton from "../components/Skeleton";
+import Loader from "./Loader";
 
 interface StockDataType {
   c: number;
@@ -135,20 +135,7 @@ function Stock() {
     );
 
   if (isLoading || !stockData || !stockHistory) {
-    return (
-      <div className="flex flex-col gap-4 w-full px-16 py-8">
-        <Skeleton className="h-4 w-48" />
-        <Skeleton className="h-12 w-40" />
-        <Skeleton className="h-5 w-56" />
-        <Skeleton className="h-[400px] w-full" />
-        <div className="flex gap-2">
-          <Skeleton className="h-7 w-12 rounded-full" />
-          <Skeleton className="h-7 w-12 rounded-full" />
-          <Skeleton className="h-7 w-12 rounded-full" />
-          <Skeleton className="h-7 w-12 rounded-full" />
-        </div>
-      </div>
-    );
+    return <Loader />;
   }
 
   return (

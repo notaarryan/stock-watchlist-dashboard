@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import WatchlistItem from "../components/WatchlistItem";
-import Skeleton from "../components/Skeleton";
+import Loader from "./Loader";
 
 interface WatchlistItemType {
   stock_symbol: string;
@@ -10,6 +10,7 @@ function Watchlist() {
   const [watchlistItems, setWatchlistItems] = useState<
     WatchlistItemType[] | null
   >(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -47,10 +48,14 @@ function Watchlist() {
         setError(
           err instanceof Error ? err.message : "Failed to load watchlist data",
         );
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchData();
   }, [BACKEND_URL]);
+
+  if (isLoading) return <Loader />;
 
   if (error)
     return (
@@ -71,25 +76,17 @@ function Watchlist() {
 
   return (
     <>
-      {watchlistItems === null ? (
-        <div className="flex flex-col max-w-2xl mx-auto w-full mt-8 gap-2">
-          <Skeleton className="h-17 w-full rounded-xl" />
-          <Skeleton className="h-17 w-full rounded-xl" />
-          <Skeleton className="h-17 w-full rounded-xl" />
+      {watchlistItems?.map((item) => (
+        <div
+          key={item.stock_symbol}
+          className="flex flex-col max-w-2xl mx-auto w-full mt-8"
+        >
+          <WatchlistItem
+            symbol={item.stock_symbol}
+            onRemove={() => handleRemove(item.stock_symbol)}
+          />
         </div>
-      ) : (
-        watchlistItems.map((item) => {
-          return (
-            <div className="flex flex-col max-w-2xl mx-auto w-full mt-8">
-              <WatchlistItem
-                key={item.stock_symbol}
-                symbol={item.stock_symbol}
-                onRemove={() => handleRemove(item.stock_symbol)}
-              />
-            </div>
-          );
-        })
-      )}
+      ))}
     </>
   );
 }

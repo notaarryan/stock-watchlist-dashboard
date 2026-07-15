@@ -2,6 +2,7 @@ import type React from "react";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import Loader from "./Loader";
 
 function Register() {
   const [username, setUsername] = useState("");
@@ -11,6 +12,7 @@ function Register() {
   const location = useLocation();
   const from = location.state?.from || "/";
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -31,33 +33,41 @@ function Register() {
 
   const loginHandle = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    let response = await fetch(`${BACKEND_URL}/auth/register`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ username, password }),
-    });
-    let result = await response.json();
-    if (response.status === 201) {
-      response = await fetch(`${BACKEND_URL}/auth/login`, {
+    setIsLoading(true);
+    try {
+      let response = await fetch(`${BACKEND_URL}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ username, password }),
       });
-      result = await response.json();
-      if (!result.user) {
-        setError("Invalid username or password");
+      let result = await response.json();
+      if (response.status === 201) {
+        response = await fetch(`${BACKEND_URL}/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ username, password }),
+        });
+        result = await response.json();
+        if (!result.user) {
+          setError("Invalid username or password");
+          return;
+        }
+        login(result.user);
+      } else {
+        setError(result.message || "Registration failed");
         return;
       }
-      login(result.user);
-    } else {
-      setError(result.message || "Registration failed");
+      setUsername("");
+      setPassword("");
+      navigate(from);
+    } finally {
+      setIsLoading(false);
     }
-    setUsername("");
-    setPassword("");
-    navigate(from);
   };
+
+  if (isLoading) return <Loader />;
 
   return (
     <div className="flex justify-center items-center w-full">

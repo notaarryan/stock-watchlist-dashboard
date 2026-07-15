@@ -2,6 +2,7 @@ import type React from "react";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import Loader from "./Loader";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -11,6 +12,7 @@ function Login() {
   const location = useLocation();
   const from = location.state?.from || "/";
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -31,22 +33,29 @@ function Login() {
 
   const loginHandle = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const response = await fetch(`${BACKEND_URL}/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ username, password }),
-    });
-    const result = await response.json();
-    if (!result.user) {
-      setError("Invalid username or password");
-      return;
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${BACKEND_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ username, password }),
+      });
+      const result = await response.json();
+      if (!result.user) {
+        setError("Invalid username or password");
+        return;
+      }
+      login(result.user);
+      setUsername("");
+      setPassword("");
+      navigate(from);
+    } finally {
+      setIsLoading(false);
     }
-    login(result.user);
-    setUsername("");
-    setPassword("");
-    navigate(from);
   };
+
+  if (isLoading) return <Loader />;
 
   return (
     <div className="flex justify-center items-center w-full">
