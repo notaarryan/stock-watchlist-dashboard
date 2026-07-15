@@ -10,10 +10,11 @@ function Watchlist() {
     WatchlistItemType[] | null
   >(null);
   const [error, setError] = useState<string | null>(null);
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   const handleRemove = async (symbol: string) => {
     try {
-      await fetch(`http://localhost:3000/watchlist/${symbol}`, {
+      await fetch(`${BACKEND_URL}/watchlist/${symbol}`, {
         credentials: "include",
         method: "delete",
       });

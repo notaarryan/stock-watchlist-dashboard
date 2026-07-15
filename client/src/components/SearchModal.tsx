@@ -21,6 +21,7 @@ function SearchModal() {
   const [stockData, setStockData] = useState<StockDataType | null>(null);
   const isMac = navigator.platform.toUpperCase().includes("MAC");
   const shortcut = isMac ? "⌘K" : "Ctrl+K";
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -40,7 +41,7 @@ function SearchModal() {
 
   const fetchStocks = async () => {
     const response = await fetch(
-      `http://localhost:3000/stocks/search?q=${searchQuery}`,
+      `${BACKEND_URL}/stocks/search?q=${searchQuery}`,
     );
     const result = await response.json();
     setStockData(result);

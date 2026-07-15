@@ -17,11 +17,12 @@ export const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await fetch("http://localhost:3000/auth/me", {
+        const response = await fetch(`${BACKEND_URL}/auth/me`, {
           credentials: "include",
         });
         const result = await response.json();
@@ -35,7 +36,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     };
     checkAuth();
-  }, []);
+  }, [BACKEND_URL]);
 
   const login = (user: UserType) => {
     setUser(user);

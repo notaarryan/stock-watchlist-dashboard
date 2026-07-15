@@ -67,12 +67,13 @@ function Stock() {
     "10Y": "past 10 years",
   };
   const [error, setError] = useState<string | null>(null);
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const stockDataResponse = await fetch(
-          `http://localhost:3000/stocks/${params.symbol}`,
+          `${BACKEND_URL}/${params.symbol}`,
         );
         const stockDataResult = await stockDataResponse.json();
         setStockData(stockDataResult);
@@ -85,13 +86,13 @@ function Stock() {
       }
     };
     fetchData();
-  }, [params.symbol]);
+  }, [BACKEND_URL, params.symbol]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const stockHistoryResponse = await fetch(
-          `http://localhost:3000/stocks/${params.symbol?.toUpperCase()}/history?range=${range}`,
+          `${BACKEND_URL}/${params.symbol?.toUpperCase()}/history?range=${range}`,
         );
         const stockHistoryResult = await stockHistoryResponse.json();
         setStockHistory(stockHistoryResult);
@@ -102,7 +103,7 @@ function Stock() {
       }
     };
     fetchData();
-  }, [params.symbol, range]);
+  }, [params.symbol, range, BACKEND_URL]);
 
   useEffect(() => {
     if (!stockData) return;

@@ -24,11 +24,12 @@ function WatchlistItem({
   const handleClick = () => {
     navigate(`/stocks/${symbol}`);
   };
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/stocks/${symbol}`);
+        const response = await fetch(`${BACKEND_URL}/stocks/${symbol}`);
         const result = await response.json();
         setStockData(result);
       } catch (error) {
@@ -36,7 +37,7 @@ function WatchlistItem({
       }
     };
     fetchData();
-  }, [symbol]);
+  }, [symbol, BACKEND_URL]);
   return (
     <div
       className="flex justify-between items-center px-4 py-4 border border-white/10 rounded-xl mb-2 hover:bg-white/5 cursor-pointer"

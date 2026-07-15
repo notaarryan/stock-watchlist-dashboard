@@ -4,16 +4,18 @@ import { useEffect, useState } from "react";
 
 function AddToWatchlist({ symbol }: { symbol: string }) {
   const [isAdded, setIsAdded] = useState<boolean>(false);
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
   const handleClick = async () => {
     try {
       if (isAdded) {
-        await fetch(`http://localhost:3000/watchlist/${symbol}`, {
+        await fetch(`${BACKEND_URL}/watchlist/${symbol}`, {
           credentials: "include",
           method: "delete",
         });
         setIsAdded(false);
       } else {
-        await fetch(`http://localhost:3000/watchlist`, {
+        await fetch(`${BACKEND_URL}/watchlist`, {
           credentials: "include",
           method: "post",
           body: JSON.stringify({ stockSymbol: symbol }),
@@ -28,7 +30,7 @@ function AddToWatchlist({ symbol }: { symbol: string }) {
 
   useEffect(() => {
     const checkWatchlist = async () => {
-      const response = await fetch("http://localhost:3000/watchlist", {
+      const response = await fetch(`${BACKEND_URL}/watchlist`, {
         credentials: "include",
       });
       const result = await response.json();
@@ -38,7 +40,7 @@ function AddToWatchlist({ symbol }: { symbol: string }) {
       setIsAdded(found);
     };
     checkWatchlist();
-  }, [symbol]);
+  }, [symbol, BACKEND_URL]);
 
   return (
     <button onClick={handleClick} className="cursor-pointer">

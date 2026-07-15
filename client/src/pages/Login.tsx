@@ -11,6 +11,7 @@ function Login() {
   const location = useLocation();
   const from = location.state?.from || "/";
   const [error, setError] = useState<string | null>(null);
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -30,7 +31,7 @@ function Login() {
 
   const loginHandle = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:3000/auth/login", {
+    const response = await fetch(`${BACKEND_URL}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

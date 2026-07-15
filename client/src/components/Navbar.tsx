@@ -4,8 +4,10 @@ import { useAuth } from "../hooks/useAuth";
 function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
   const handleLogout = async () => {
-    await fetch("http://localhost:3000/auth/logout", {
+    await fetch(`${BACKEND_URL}/auth/logout`, {
       method: "POST",
       credentials: "include",
     });
