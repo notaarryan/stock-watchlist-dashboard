@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import PortfolioSymbolGroup from "../components/PortfolioSymbolGroup";
+import PortfolioAllocationChart from "../components/PortfolioAllocationChart";
 import Loader from "./Loader";
 import {
   aggregateBySymbol,
@@ -108,6 +109,7 @@ function Portfolio() {
 
   return (
     <div className="flex flex-col max-w-2xl mx-auto w-full mt-8 gap-6">
+      <PortfolioAllocationChart aggregates={aggregates} />
       <div className="border border-black/10 dark:border-white/10 rounded-xl px-6 py-5">
         <p className="text-gray-500 dark:text-gray-400 text-sm">
           Portfolio value
