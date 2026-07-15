@@ -4,7 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const handleLogout = async (e) => {
+  const handleLogout = async () => {
     await fetch("http://localhost:3000/auth/logout", {
       method: "POST",
       credentials: "include",
