@@ -173,7 +173,9 @@ function Stock() {
                 <Line
                   type="monotone"
                   dataKey="price"
-                  stroke={stockData.d >= 0 ? "#22c55e" : "#fb2c36"}
+                  stroke={
+                    rangeReturn && rangeReturn >= 0 ? "#22c55e" : "#fb2c36"
+                  }
                   dot={false}
                 />
                 <Tooltip
