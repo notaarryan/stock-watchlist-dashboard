@@ -100,7 +100,10 @@ function SearchModal() {
                 {stockData.stockData.results.map((stock) => (
                   <div
                     key={stock["ticker"]}
-                    onClick={() => navigate(`/stocks/${stock["ticker"]}`)}
+                    onClick={() => {
+                      setIsOpen(false);
+                      navigate(`/stocks/${stock["ticker"]}`);
+                    }}
                     className="flex justify-between items-center px-4 py-3 border-b border-white/10 hover:bg-white/10 cursor-pointer last:border-none gap-4"
                   >
                     <div>
