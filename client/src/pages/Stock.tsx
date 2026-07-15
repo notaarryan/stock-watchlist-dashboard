@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Tooltip, Line, LineChart, XAxis, YAxis } from "recharts";
+import {
+  Tooltip,
+  Line,
+  LineChart,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+} from "recharts";
+import AddToWatchlist from "../components/AddToWatchlist";
+import { useAuth } from "../hooks/useAuth";
+import Loader from "./Loader";
 
 interface StockDataType {
   c: number;
@@ -31,6 +41,8 @@ interface StockPriceDataType {
 }
 
 function Stock() {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { user } = useAuth();
   const params = useParams();
   const [stockData, setStockData] = useState<StockDataType | null>(null);
   const [stockHistory, setStockHistory] = useState<StockHistoryType | null>(
@@ -54,6 +66,7 @@ function Stock() {
     "1Y": "past year",
     "10Y": "past 10 years",
   };
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,8 +76,12 @@ function Stock() {
         );
         const stockDataResult = await stockDataResponse.json();
         setStockData(stockDataResult);
-      } catch (error) {
-        console.log(error);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to load stock data",
+        );
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchData();
@@ -78,8 +95,10 @@ function Stock() {
         );
         const stockHistoryResult = await stockHistoryResponse.json();
         setStockHistory(stockHistoryResult);
-      } catch (error) {
-        console.log(error);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to load stock data",
+        );
       }
     };
     fetchData();
@@ -106,12 +125,26 @@ function Stock() {
     return () => clearInterval(timer);
   }, [stockData]);
 
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  if (error)
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <p className="text-red-500">{error}</p>
+      </div>
+    );
+
   return (
     <div className="flex flex-col gap-4 w-full px-16 py-8">
       {stockData && stockHistory && (
         <>
-          <div className="text-gray-400 text-sm">
-            {params.symbol} · {stockHistory.meta.longName}
+          <div className="flex items-center gap-2 text-gray-400 text-sm">
+            <span>
+              {params.symbol} · {stockHistory.meta.longName}
+            </span>
+            {user && <AddToWatchlist symbol={params.symbol!} />}
           </div>
           <div className="text-5xl font-bold">${displayPrice.toFixed(2)}</div>
           <div className={stockData.d >= 0 ? "text-green-500" : "text-red-500"}>
@@ -132,31 +165,30 @@ function Stock() {
               {stockData.d} ({stockData.dp}%) today
             </span>
           </div>
-          <div className="outline-none">
-            <LineChart
-              width={800}
-              height={400}
-              data={chartData}
-              responsive
-              className="outline-none"
-            >
-              <XAxis dataKey="date" />
-              <YAxis domain={["auto", "auto"]} />
-              <Line
-                type="monotone"
-                dataKey="price"
-                stroke={stockData.d >= 0 ? "#22c55e" : "#fb2c36"}
-                dot={false}
-              />
-              <Tooltip
-                formatter={(value) => [`$${Number(value).toFixed(2)}`, "Price"]}
-                contentStyle={{
-                  backgroundColor: "#111",
-                  border: "none",
-                  borderRadius: "8px",
-                }}
-              />
-            </LineChart>
+          <div className="max-w-full outline-none overflow-hidden">
+            <ResponsiveContainer width="100%" height={400}>
+              <LineChart data={chartData} responsive className="outline-none">
+                <XAxis dataKey="date" />
+                <YAxis domain={["auto", "auto"]} />
+                <Line
+                  type="monotone"
+                  dataKey="price"
+                  stroke={stockData.d >= 0 ? "#22c55e" : "#fb2c36"}
+                  dot={false}
+                />
+                <Tooltip
+                  formatter={(value) => [
+                    `$${Number(value).toFixed(2)}`,
+                    "Price",
+                  ]}
+                  contentStyle={{
+                    backgroundColor: "#111",
+                    border: "none",
+                    borderRadius: "8px",
+                  }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
           <div className="flex gap-2">
             {["1W", "1M", "1Y", "10Y"].map((r) => (

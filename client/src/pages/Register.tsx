@@ -10,6 +10,7 @@ function Register() {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from || "/";
+  const [error, setError] = useState<string | null>(null);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -44,9 +45,13 @@ function Register() {
         body: JSON.stringify({ username, password }),
       });
       result = await response.json();
+      if (!result.user) {
+        setError("Invalid username or password");
+        return;
+      }
       login(result.user);
     } else {
-      throw new Error(result);
+      setError(result.message || "Registration failed");
     }
     setUsername("");
     setPassword("");
@@ -105,6 +110,7 @@ function Register() {
         >
           Register
         </button>
+        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
         <div>
           <p>
             If you already have an account{" "}

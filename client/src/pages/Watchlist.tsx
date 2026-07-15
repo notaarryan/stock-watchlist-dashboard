@@ -1,6 +1,92 @@
+import { useEffect, useState } from "react";
+import WatchlistItem from "../components/WatchlistItem";
+
+interface WatchlistItemType {
+  stock_symbol: string;
+}
+
 function Watchlist() {
+  const [watchlistItems, setWatchlistItems] = useState<
+    WatchlistItemType[] | null
+  >(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleRemove = async (symbol: string) => {
+    try {
+      await fetch(`http://localhost:3000/watchlist/${symbol}`, {
+        credentials: "include",
+        method: "delete",
+      });
+      setWatchlistItems(
+        (prev) => prev?.filter((item) => item.stock_symbol !== symbol) ?? null,
+      );
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to remove stock from watchlist",
+      );
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/watchlist", {
+          credentials: "include",
+        });
+        const result = await response.json();
+        if (Array.isArray(result)) {
+          setWatchlistItems(result);
+        } else {
+          setWatchlistItems([]);
+        }
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to load watchlist data",
+        );
+      }
+    };
+    fetchData();
+  }, []);
+
+  if (error)
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <p className="text-red-500">{error}</p>
+      </div>
+    );
+
+  if (watchlistItems !== null && watchlistItems.length === 0) {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <p className="text-gray-500">
+          Add stocks to watchlist to see them here
+        </p>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex justify-center items-center w-full">Watchlist</div>
+    <>
+      {watchlistItems === null ? (
+        <div className="flex-1 flex items-center justify-center">
+          <p className="text-gray-500">Loading...</p>
+        </div>
+      ) : (
+        watchlistItems.map((item) => {
+          return (
+            <div className="flex flex-col max-w-2xl mx-auto w-full mt-8">
+              <WatchlistItem
+                key={item.stock_symbol}
+                symbol={item.stock_symbol}
+                onRemove={() => handleRemove(item.stock_symbol)}
+              />
+            </div>
+          );
+        })
+      )}
+    </>
   );
 }
 

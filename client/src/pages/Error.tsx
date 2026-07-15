@@ -1,11 +1,14 @@
 import { useRouteError } from "react-router-dom";
 
 function Error() {
-  const error = useRouteError();
-  console.error(error);
+  const error = useRouteError() as { message?: string };
+
   return (
-    <div className="min-h-screen w-full flex flex-col px-10 py-2.5 text-gray-50 bg-gray-950 justify-center items-center">
-      {String(error)}
+    <div className="flex-1 flex flex-col items-center justify-center gap-4">
+      <h1 className="text-4xl font-bold">Something went wrong</h1>
+      <p className="text-gray-400">
+        {error?.message || "An unexpected error occurred"}
+      </p>
     </div>
   );
 }
