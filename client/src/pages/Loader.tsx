@@ -1,6 +1,6 @@
 function Loader() {
   return (
-    <div className="flex-1 flex justify-center items-center">
+    <div className="h-full w-full flex justify-center items-center bg-white dark:bg-gray-950">
       <div className="w-8 h-8 border-2 border-black/20 dark:border-white/20 border-t-black dark:border-t-white rounded-full animate-spin" />
     </div>
   );
