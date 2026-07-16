@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { AuthContext } from "./auth-context";
 import { logError } from "../utils/log";
+import Loader from "../pages/Loader";
 
 interface UserType {
   user_id: number;
@@ -38,6 +39,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = () => {
     setUser(null);
   };
+
+  if (loading) return <Loader />;
 
   return (
     <AuthContext.Provider value={{ user, login, logout, loading }}>
